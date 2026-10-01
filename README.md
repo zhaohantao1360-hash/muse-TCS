@@ -6,7 +6,7 @@ muse贪吃蛇
 | 文件 | 说明 |
 |---|---|
 | `PingMeSignin.lpx` | PingMe 每日自动签到 Loon 插件（由 mickeu 的 Egern 版移植）。定时任务默认每天 0 点起每 4 小时运行一次；抓参开关打开后，进 PingMe App 触发一次余额查询即自动保存签到参数 |
-| `PingMeSignin_loon.js` | 插件的定时签到脚本（被 `PingMeSignin.lpx` 的 cron 任务引用） |
+| `PingMeSignin_loon.js` | 插件的定时签到脚本（被 `PingMeSignin.lpx` 的 cron 任务引用；2026-10-01 起同步自 fmz200/wool_scripts 原版，替代了之前的移植版） |
 | `pingme_capture_loon.js` | 插件的抓参脚本（被 `PingMeSignin.lpx` 的 http-request 引用，拦截余额查询接口保存签到参数） |
 | `WeTalkSignin.lpx` | WeTalk 自动化签到 Loon 插件（签到 + 5 次视频奖励，按 email 区分多账号）。脚本内嵌 Env.js 原生支持 Loon，`script-path` 直接引用作者原版地址，自动同步上游更新 |
 

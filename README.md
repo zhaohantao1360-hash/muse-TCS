@@ -13,6 +13,10 @@ muse贪吃蛇
 | `pingme_capture_egern.js` | Egern 模块的抓参脚本（与旧版抓参格式兼容，共用 `pingme_capture_v3`，无需重新抓参） |
 | `WeTalkSignin.lpx` | WeTalk 自动化签到 Loon 插件（签到 + 5 次视频奖励，按 email 区分多账号）。脚本内嵌 Env.js 原生支持 Loon，`script-path` 直接引用作者原版地址，自动同步上游更新 |
 
+## honue 插件（优化版）
+
+`honue/` 目录：honue/rules 仓库 `Loon/plugin/` 下 3 个插件的优化版（115 网盘 Cookie 获取 / 豆瓣开屏去广告 / 番茄小说去广告）。**注意 115.plugin 原版有个致命 bug**（`script-path=https://115.js` 是死地址，装上不工作），本版已修正为上游真实脚本地址。详细优化点见 [honue/README.md](honue/README.md)。
+
 ## 使用方法
 
 1. 把 `.lpx` 文件导入 Loon（插件 → 右上角 + → 通过链接/文件安装）

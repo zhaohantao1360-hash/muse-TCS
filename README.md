@@ -17,6 +17,10 @@ muse贪吃蛇
 
 `honue/` 目录：honue/rules 仓库 `Loon/plugin/` 下 3 个插件的优化版（115 网盘 Cookie 获取 / 豆瓣开屏去广告 / 番茄小说去广告）。**注意 115.plugin 原版有个致命 bug**（`script-path=https://115.js` 是死地址，装上不工作），本版已修正为上游真实脚本地址。详细优化点见 [honue/README.md](honue/README.md)。
 
+## Egern 模块
+
+- `FanQieNovel_egern.yaml`：番茄小说去广告的 Egern 版（由本目录 `honue/FanQieNovel.plugin` 优化版转换：32 条 REJECT 规则 + 18 条 URL 改写 + MITM）。Egern → 模块 → 右上角 + → 通过链接添加。
+
 ## 使用方法
 
 1. 把 `.lpx` 文件导入 Loon（插件 → 右上角 + → 通过链接/文件安装）

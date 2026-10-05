@@ -1,0 +1,185 @@
+# 番茄小说去广告（Egern 模块）
+# 来源：honue/rules 的 Loon 插件 FanQieNovel.plugin，转写为 Egern 原生模块格式。
+# 转换底稿为本仓库 honue/FanQieNovel.plugin（优化版：已去重、移除抖音直播规则、注释掉待定 IP 段）。
+# 转换对照：Loon [Rule] → rules（REJECT）；Loon [URL Rewrite] 的 reject → url_rewrites（按 Egern 官方文档写法：location 指到 https://reject/ + 307）；[MITM] → mitm.hostnames.includes。
+# 说明：屏蔽底部和章末广告，不影响金币获取。MITM 证书需在 Egern 内安装并信任。
+name: 番茄小说去广告
+description: 屏蔽番茄小说底部和章末广告，不影响金币获取。由 honue Loon 插件转换而来。
+author: zqzess honue（原版插件）；转换：muse-TCS
+homepage: https://github.com/honue/rules
+icon: https://raw.githubusercontent.com/honue/rules/refs/heads/master/img/fqnovel.png
+rules:
+  # 广告/统计域名直拒
+  - domain:
+      match: i.snssdk.com
+      policy: REJECT
+  - domain:
+      match: i-lq.snssdk.com
+      policy: REJECT
+  - domain:
+      match: dig.bdurl.net
+      policy: REJECT
+  - domain_keyword:
+      match: zijieapi
+      policy: REJECT
+  - domain:
+      match: activity-ag.awemeughun.com
+      policy: REJECT
+  - domain:
+      match: mcs.snssdk.com
+      policy: REJECT
+  - domain:
+      match: tnc3-alisc1.snssdk.com
+      policy: REJECT
+  - domain:
+      match: security-lq.snssdk.com
+      policy: REJECT
+  - domain:
+      match: tnc3-aliec2.snssdk.com
+      policy: REJECT
+  - domain:
+      match: is.snssdk.com
+      policy: REJECT
+  - domain:
+      match: v6-novelapp.ixigua.com
+      policy: REJECT
+  - domain_wildcard:
+      match: '*novelapp.ixigua.com'
+      policy: REJECT
+  - domain_wildcard:
+      match: '*default.ixigua.com'
+      policy: REJECT
+  - domain:
+      match: msync-im1-vip6-std.easemob.com
+      policy: REJECT
+  - domain:
+      match: apd-pcdnwxlogin.teg.tencent-cloud.net
+      policy: REJECT
+  - domain:
+      match: api.iegadp.qq.com
+      policy: REJECT
+  - domain:
+      match: sf3-ttcdn-tos.pstatp.com
+      policy: REJECT
+  - domain_suffix:
+      match: pglstatp-toutiao.com
+      policy: REJECT
+  - domain_suffix:
+      match: byteorge.com
+      policy: REJECT
+  - domain_suffix:
+      match: bytedance.com
+      policy: REJECT
+  - domain_suffix:
+      match: bytegoofy.com
+      policy: REJECT
+  # 广告 IP 段直拒（no_resolve：不做 DNS 解析直接匹配）
+  - ip_cidr:
+      match: 49.71.37.101/32
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr:
+      match: 117.71.105.23/32
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr:
+      match: 218.94.207.205/32
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr:
+      match: 117.92.229.188/32
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr:
+      match: 101.36.166.16/32
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr:
+      match: 180.96.2.114/32
+      policy: REJECT
+      no_resolve: true
+  # URL 正则直拒（原版 [Rule] 里的 URL-REGEX）
+  - url_regex:
+      match: '^https?:\/\/.*(ad-sign)+.*\.byteimg\.com(\/.+)?'
+      policy: REJECT
+  - url_regex:
+      match: '^https?:\/\/.*(aio)+.*\.ecombdimg\.com(\/.+)?'
+      policy: REJECT
+  - domain_suffix:
+      match: ecombdapi.com
+      policy: REJECT
+  - domain_suffix:
+      match: ecombdimg.com
+      policy: REJECT
+  - domain:
+      match: vas-lf-x.snssdk.com
+      policy: REJECT
+url_rewrites:
+  # 章末广告（原版 [URL Rewrite] 的 reject；Egern 写法：指到 https://reject/ + 307）
+  - match: '^https?:\/\/.+\.pangolin-sdk-toutiao\.com\/api\/ad\/union\/sdk\/(get_ads|stats|settings)\/'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/.+\.pglstatp-toutiao\.com\/.+\/toutiao\.mp4'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/.+\.(pglstatp-toutiao|pstatp)\.com\/(obj|img)\/(ad-app-package|ad)\/.+'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/.+\.(pglstatp-toutiao|pstatp)\.com\/(obj|img)\/web\.business\.image\/.+'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/.+\.(pglstatp-toutiao|pstatp)\.com\/obj\/ad-pattern\/renderer'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/gurd\.snssdk\.com\/src\/server\/v3\/package'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/.+\.byteimg.com/tos-cn-i-1yzifmftcy\/(.+)-jpeg\.jpeg'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/.+\.pstatp\.com\/obj\/mosaic-legacy\/.+\?from\=ad'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/.+\.pstatp\.com\/bytecom\/resource\/track_log\/src\/.+'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/.+\.snssdk\.com\/video\/play\/1\/toutiao\/.+\/mp4'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/.+\.snssdk.com\/api\/ad\/.+'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^http:\/\/.+\.byteimg\.com\/ad-app-package'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^http:\/\/.+\.byteimg\.com\/web\.business\.image'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/.+?\.snssdk\.com\/motor\/operation\/activity\/display\/config\/V2\/'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/.+\.(pglstatp-toutiao|pstatp)\.com\/(ad-app-package|ad)\/.+'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/adim\.pinduoduo\.com\/.+\/toutiao\?.+'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/v(\d)+-novelapp\.fqnovelvod\.com\/.+\/video\/.+'
+    location: 'https://reject/'
+    status_code: 307
+  - match: '^https?:\/\/.+\.(pglstatp-toutiao|pstatp)\.com\/obj\/ad-site-adstyle-public\/.+'
+    location: 'https://reject/'
+    status_code: 307
+mitm:
+  hostnames:
+    includes:
+      - '*.pangolin-sdk-toutiao.*'
+      - '*.pstatp.com'
+      - '*.pstatp.com.*'
+      - '*.pglstatp-toutiao.com.*'
+      - '*.pglstatp-toutiao.com'
+      - gurd.snssdk.com
+      - 'gurd.snssdk.com.*'
+      - '*default.ixigua.com'
+      - adim.pinduoduo.com
+      - '*novelapp.fqnovelvod.com'

@@ -649,14 +649,33 @@ function parseMobile(feeData, planData, opts) {
   };
 
   // 流量：先直接取，取不到就深搜（严格判断数组防 .filter 炸）
-  const flowArr = Array.isArray(planInfo.planRemianFlowRes) ? planInfo.planRemianFlowRes : [];
-  let flows = flowArr.filter((f) => f && f.flowtype == 0);
+  // 实际字段名为 planRemianFlowListRes（含 List）
+  const flowArrDirect = Array.isArray(planInfo.planRemianFlowListRes) ? planInfo.planRemianFlowListRes
+    : Array.isArray(planInfo.planRemianFlowRes) ? planInfo.planRemianFlowRes : [];
+  let flowArrAll = flowArrDirect;
+  let flows = flowArrDirect.filter((f) => f && f.flowtype == 0);
   if (!flows.length && planData) {
     const found = [];
     deepFindArrays(planData, 'flowRemainNum', found, new Set());
     const arr = Array.isArray(found[0]) ? found[0] : [];
+    if (arr.length) flowArrAll = arr;
     flows = arr.filter((f) => f && f.flowtype == 0);
     if (!flows.length && arr.length) flows = arr.slice(0, 1); // 实在没有 flowtype 就取第一条
+  }
+  // 国内其他流量：flowtype != 0 的各项求和（统一按 MB 累加再格式化）
+  let otherFlow = { title: '其他流量', number: '--', unit: '', percent: 0, color: '#5AC8FA' };
+  const otherItems = flowArrAll.filter((f) => f && f.flowtype != 0);
+  if (otherItems.length) {
+    let totalMb = 0;
+    for (const f of otherItems) {
+      const remain = parseFloat(f.flowRemainNum || '0');
+      if (!Number.isFinite(remain)) continue;
+      totalMb += String(f.unit || '03') === '04' ? remain * 1024 : remain;
+    }
+    const u = totalMb >= 1024
+      ? { number: (totalMb / 1024).toFixed(2), unit: 'GB' }
+      : { number: totalMb.toFixed(2), unit: 'MB' };
+    otherFlow = { title: '其他流量', number: u.number, unit: u.unit, percent: 0, color: '#5AC8FA' };
   }
   let flow = { title: '剩余流量', number: '--', unit: '', percent: 0, color: '#0A84FF' };
   if (flows.length) {
@@ -694,7 +713,7 @@ function parseMobile(feeData, planData, opts) {
     voice.number = String(Number.isFinite(remain) ? remain : 0);
   }
 
-  return { fee, flow, voice, updatedAt: Date.now() };
+  return { fee, flow, otherFlow, voice, updatedAt: Date.now() };
 }
 
 async function loadData(ctx) {
@@ -729,6 +748,7 @@ async function loadData(ctx) {
 const FEE_ICON = 'yensign.circle.fill';
 const FEE_ICON_COLOR = '#FF9F0A';
 const FLOW_ICON = 'antenna.radiowaves.left.and.right';
+const OTHER_FLOW_ICON = 'globe';
 const VOICE_ICON = 'phone.circle.fill';
 
 function statCard(icon, color, size, data) {
@@ -791,10 +811,11 @@ function buildSmall(title, ds, fromCache) {
         ],
       },
       {
-        type: 'stack', direction: 'row', gap: 10,
+        type: 'stack', direction: 'row', gap: 6,
         children: [
-          statCard(FLOW_ICON, ds.flow.color, 58, ds.flow),
-          statCard(VOICE_ICON, ds.voice.color, 58, ds.voice),
+          statCard(FLOW_ICON, ds.flow.color, 44, ds.flow),
+          statCard(OTHER_FLOW_ICON, (ds.otherFlow || {}).color || '#5AC8FA', 44, ds.otherFlow || { number: '--', unit: '', title: '其他流量' }),
+          statCard(VOICE_ICON, ds.voice.color, 44, ds.voice),
         ],
       },
     ],
@@ -822,6 +843,7 @@ function buildMedium(title, ds, fromCache, ctx) {
         children: [
           card(statCard(FEE_ICON, FEE_ICON_COLOR, 62, ds.fee).children),
           card(statCard(FLOW_ICON, ds.flow.color, 62, ds.flow).children),
+          card(statCard(OTHER_FLOW_ICON, (ds.otherFlow || {}).color || '#5AC8FA', 62, ds.otherFlow || { number: '--', unit: '', title: '其他流量' }).children),
           card(statCard(VOICE_ICON, ds.voice.color, 62, ds.voice).children),
         ],
       },

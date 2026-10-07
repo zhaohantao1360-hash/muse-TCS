@@ -1,0 +1,43 @@
+name: "中国移动"
+description: "小组件显示移动剩余话费 / 剩余流量 / 剩余语音。先在「中国移动」App 里用短信验证码登录一次自动捕获参数"
+author: "小秘书"
+
+# 需要解密中国移动 App 的 HTTPS 流量：Egern 设置里安装并信任 CA，
+# 再到 iOS「设置→通用→关于本机→证书信任设置」里打开信任
+mitm:
+  hostnames:
+    includes:
+      - client.app.coc.10086.cn
+
+scriptings:
+  # 小组件脚本（generic 类型）
+  - generic:
+      name: "china-mobile"
+      script_url: "https://raw.githubusercontent.com/zhaohantao1360-hash/muse-TCS/refs/heads/main/china-mobile.js"
+      timeout: 20
+      env:
+        CM_PHONENUMBER: ""          # 必填：11 位移动手机号
+        # CM_SHOW_USED_FLOW: "false" # 'true' 显示已用流量，否则显示剩余流量
+        # CM_TITLE: "中国移动"        # 小组件标题
+        # CM_WIDGET_STYLE: "glass"   # 'glass' 卡片半透明（默认）；'classic' 卡片实底色
+        # CM_DEBUG: "false"          # 'true' 显示调试信息
+
+  # 登录参数捕获（http_request 类型，与小组件是同一个文件，脚本内部自动分支）
+  # 在「中国移动」App 里用短信验证码登录一次（建议关闭指纹/面容登录），看到通知即成功
+  - http_request:
+      name: "中国移动登录捕获"
+      match: '^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/[LD]N\/(uam(onekey|randcode)login|realPersonAuthentication)\/autoLogin'
+      script_url: "https://raw.githubusercontent.com/zhaohantao1360-hash/muse-TCS/refs/heads/main/china-mobile.js"
+      body_required: true
+      timeout: 10
+
+  # Cookie 刷新（http_response 类型）：从登录响应里抓 Set-Cookie，保持会话有效
+  - http_response:
+      name: "中国移动Cookie捕获"
+      match: '^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/[LD]N\/(uam(onekey|randcode)login|realPersonAuthentication)\/autoLogin'
+      script_url: "https://raw.githubusercontent.com/zhaohantao1360-hash/muse-TCS/refs/heads/main/china-mobile.js"
+      timeout: 10
+
+widgets:
+  # 与同名 generic 脚本自动关联
+  - name: "china-mobile"

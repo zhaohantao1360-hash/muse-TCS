@@ -407,7 +407,18 @@ async function handleCapture(ctx) {
     return; // 只收 2/12/14 三种加密形态
   }
 
-  const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
+  // Egern ESM 的 ctx.request.body 可能是空对象，真正的 body 在传统全局 $request.body 里
+  let rawBody = '';
+  try {
+    if (typeof $request !== 'undefined' && $request && typeof $request.body === 'string' && $request.body.length > 0) {
+      rawBody = $request.body;
+    }
+  } catch (e) {}
+  if (!rawBody) {
+    const cb = req.body;
+    rawBody = typeof cb === 'string' ? cb : JSON.stringify(cb || '');
+  }
+  const body = rawBody;
   dlog(ctx, `body类型=${typeof req.body} 长度=${body.length} base64=${/^[A-Za-z0-9+/=\r\n]+$/.test(body)}`);
   if (!body || body.length < 16) return;
 
@@ -446,7 +457,17 @@ async function handleRespCapture(ctx) {
   const resp = ctx.response || {};
   const url = req.url || resp.url || '';
   if (!isAutoLogin(url)) return;
-  const setCookie = String(getHeader(resp.headers, 'set-cookie') || '').trim();
+  // ESM 的 ctx.response.headers 可能为空，兜底读传统全局 $response
+  let respHeaders = resp.headers || {};
+  try {
+    if (typeof $response !== 'undefined' && $response && $response.headers) {
+      const gh = $response.headers;
+      if (!respHeaders['set-cookie'] && !respHeaders['Set-Cookie'] && (gh['set-cookie'] || gh['Set-Cookie'])) {
+        respHeaders = gh;
+      }
+    }
+  } catch (e) {}
+  const setCookie = String(getHeader(respHeaders, 'set-cookie') || '').trim();
   if (setCookie && ctx.storage.get(STORE.cookie) !== setCookie) {
     ctx.storage.set(STORE.cookie, setCookie);
   }

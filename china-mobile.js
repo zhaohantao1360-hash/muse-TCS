@@ -403,6 +403,7 @@ async function handleCapture(ctx) {
   }
 
   const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
+  dlog(ctx, `body类型=${typeof req.body} 长度=${body.length} base64=${/^[A-Za-z0-9+/=\r\n]+$/.test(body)}`);
   if (!body || body.length < 16) return;
 
   // 先验证能解密，防存坏数据；x-qen 指示的优先，不行就把所有已知组合试一遍

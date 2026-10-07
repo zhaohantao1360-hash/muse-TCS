@@ -374,10 +374,11 @@ function randomDigits(n) {
 /* ==================== 捕获 ==================== */
 
 function isAutoLogin(url) {
-  if (/client\.app\.coc\.10086\.cn/.test(url) && /\/biz-orange\/[LD]N\/.*autoLogin/.test(url)) return true;
   // 新主机：中国移动 App 实际走 10086.online-cmcc.cn:20010，登录路径待确认，先放行由 x-qen 过滤
   if (/10086\.online-cmcc\.cn/.test(url)) return true;
-  return false;
+  // 老主机：autoLogin（登录）与 refreshSession（会话刷新，App 自动调用）都认
+  return /client\.app\.coc\.10086\.cn/.test(url) &&
+    /\/biz-orange\/[A-Z]{2}\/.*(autoLogin|refreshSession)/.test(url);
 }
 
 function dlog(ctx, msg) {
@@ -407,8 +408,10 @@ async function handleCapture(ctx) {
   // 先验证能解密，防存坏数据
   try {
     const plain = cmDecrypt(body, REQ_KEY[xqen], REQ_IV[xqen]);
-    JSON.parse(plain);
+    const obj = JSON.parse(plain);
+    dlog(ctx, `解密OK，顶层字段: ${Object.keys(obj).join(',').slice(0, 120)}`);
   } catch (e) {
+    dlog(ctx, `解密失败，跳过`);
     return;
   }
 

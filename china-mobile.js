@@ -396,6 +396,11 @@ async function handleCapture(ctx) {
   const xqen = String(getHeader(headers, 'x-qen') || '').trim();
   const qmark = url.indexOf('?');
   dlog(ctx, `REQ ${req.method || ''} ${(qmark > 0 ? url.slice(0, qmark) : url).slice(0, 200)} x-qen=${xqen || '-'}`);
+  dlog(ctx, `req keys=${Object.keys(req).join(',')}`);
+  try {
+    const g = (typeof $request !== 'undefined' && $request && $request.body);
+    dlog(ctx, `global $request.body type=${g ? typeof g : 'n/a'} len=${g && g.length !== undefined ? g.length : 'n/a'}`);
+  } catch (e) { dlog(ctx, `global $request 不可用`); }
   if (!isAutoLogin(url)) return;
   if (!REQ_KEY[xqen]) {
     dlog(ctx, `跳过：x-qen=${xqen || '(空)'} 不在 {2,12,14}`);

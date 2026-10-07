@@ -381,7 +381,8 @@ function isAutoLogin(url) {
 }
 
 function dlog(ctx, msg) {
-  if (ctx.env.CM_DEBUG === 'true' && typeof console !== 'undefined' && console.log) {
+  // 侦察日志常开：只记方法+路径，不记查询参数与正文
+  if (typeof console !== 'undefined' && console.log) {
     try { console.log(`[CM] ${msg}`); } catch (e) {}
   }
 }
@@ -390,11 +391,11 @@ function dlog(ctx, msg) {
 async function handleCapture(ctx) {
   const req = ctx.request || {};
   const url = req.url || '';
-  if (!isAutoLogin(url)) return;
-
   const headers = req.headers || {};
   const xqen = String(getHeader(headers, 'x-qen') || '').trim();
-  dlog(ctx, `${req.method || ''} ${url.slice(0, 160)} x-qen=${xqen || '(空)'}`);
+  const qmark = url.indexOf('?');
+  dlog(ctx, `REQ ${req.method || ''} ${(qmark > 0 ? url.slice(0, qmark) : url).slice(0, 200)} x-qen=${xqen || '-'}`);
+  if (!isAutoLogin(url)) return;
   if (!REQ_KEY[xqen]) {
     dlog(ctx, `跳过：x-qen=${xqen || '(空)'} 不在 {2,12,14}`);
     return; // 只收 2/12/14 三种加密形态

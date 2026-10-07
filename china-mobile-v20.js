@@ -848,7 +848,7 @@ function metricCard(icon, color, data) {
     backgroundColor: { light: '#F2F2F7', dark: '#1C1C1E' },
     children: [
       { type: 'image', src: `sf-symbol:${icon}`, width: 20, height: 20, color },
-      { type: 'text', text: d.title, font: { size: 'caption2' }, color, maxLines: 1 },
+      { type: 'text', text: d.title, font: { size: 'caption1' }, color, maxLines: 1 },
       {
         type: 'text', text: String(d.number),
         font: { size: 'headline', weight: 'bold' }, maxLines: 1, minScale: 0.6,

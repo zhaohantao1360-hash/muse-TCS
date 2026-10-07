@@ -14,7 +14,7 @@ scriptings:
   # 小组件脚本（generic 类型）
   - generic:
       name: "china-mobile"
-      script_url: "https://raw.githubusercontent.com/zhaohantao1360-hash/muse-TCS/refs/heads/main/china-mobile-v8.js"
+      script_url: "https://raw.githubusercontent.com/zhaohantao1360-hash/muse-TCS/refs/heads/main/china-mobile-v9.js"
       timeout: 20
       env:
         CM_PHONENUMBER: ""          # 必填：11 位移动手机号
@@ -28,7 +28,7 @@ scriptings:
   - http_request:
       name: "中国移动登录捕获"
       match: '^https?:\/\/(client\.app\.coc\.10086\.cn|10086\.online-cmcc\.cn)(:\d+)?\/'
-      script_url: "https://raw.githubusercontent.com/zhaohantao1360-hash/muse-TCS/refs/heads/main/china-mobile-v8.js"
+      script_url: "https://raw.githubusercontent.com/zhaohantao1360-hash/muse-TCS/refs/heads/main/china-mobile-v9.js"
       body_required: true
       timeout: 10
 
@@ -36,7 +36,7 @@ scriptings:
   - http_response:
       name: "中国移动Cookie捕获"
       match: '^https?:\/\/(client\.app\.coc\.10086\.cn|10086\.online-cmcc\.cn)(:\d+)?\/'
-      script_url: "https://raw.githubusercontent.com/zhaohantao1360-hash/muse-TCS/refs/heads/main/china-mobile-v8.js"
+      script_url: "https://raw.githubusercontent.com/zhaohantao1360-hash/muse-TCS/refs/heads/main/china-mobile-v9.js"
       timeout: 10
 
 widgets:

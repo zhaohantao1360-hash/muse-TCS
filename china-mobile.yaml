@@ -8,6 +8,7 @@ mitm:
   hostnames:
     includes:
       - client.app.coc.10086.cn
+      - 10086.online-cmcc.cn
 
 scriptings:
   # 小组件脚本（generic 类型）
@@ -26,7 +27,7 @@ scriptings:
   # 在「中国移动」App 里用短信验证码登录一次（建议关闭指纹/面容登录），看到通知即成功
   - http_request:
       name: "中国移动登录捕获"
-      match: '^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/[LD]N\/(uam(onekey|randcode)login|realPersonAuthentication)\/autoLogin'
+      match: '^https?:\/\/(client\.app\.coc\.10086\.cn|10086\.online-cmcc\.cn)(:\d+)?\/'
       script_url: "https://raw.githubusercontent.com/zhaohantao1360-hash/muse-TCS/refs/heads/main/china-mobile.js"
       body_required: true
       timeout: 10
@@ -34,7 +35,7 @@ scriptings:
   # Cookie 刷新（http_response 类型）：从登录响应里抓 Set-Cookie，保持会话有效
   - http_response:
       name: "中国移动Cookie捕获"
-      match: '^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/[LD]N\/(uam(onekey|randcode)login|realPersonAuthentication)\/autoLogin'
+      match: '^https?:\/\/(client\.app\.coc\.10086\.cn|10086\.online-cmcc\.cn)(:\d+)?\/'
       script_url: "https://raw.githubusercontent.com/zhaohantao1360-hash/muse-TCS/refs/heads/main/china-mobile.js"
       timeout: 10
 

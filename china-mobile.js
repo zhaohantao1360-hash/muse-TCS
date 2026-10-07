@@ -374,7 +374,16 @@ function randomDigits(n) {
 /* ==================== 捕获 ==================== */
 
 function isAutoLogin(url) {
-  return /client\.app\.coc\.10086\.cn/.test(url) && /\/biz-orange\/[LD]N\/.*autoLogin/.test(url);
+  if (/client\.app\.coc\.10086\.cn/.test(url) && /\/biz-orange\/[LD]N\/.*autoLogin/.test(url)) return true;
+  // 新主机：中国移动 App 实际走 10086.online-cmcc.cn:20010，登录路径待确认，先放行由 x-qen 过滤
+  if (/10086\.online-cmcc\.cn/.test(url)) return true;
+  return false;
+}
+
+function dlog(ctx, msg) {
+  if (ctx.env.CM_DEBUG === 'true' && typeof console !== 'undefined' && console.log) {
+    try { console.log(`[CM] ${msg}`); } catch (e) {}
+  }
 }
 
 // http_request：在 App 登录时抓加密参数
@@ -385,7 +394,11 @@ async function handleCapture(ctx) {
 
   const headers = req.headers || {};
   const xqen = String(getHeader(headers, 'x-qen') || '').trim();
-  if (!REQ_KEY[xqen]) return; // 只收 2/12/14 三种加密形态
+  dlog(ctx, `${req.method || ''} ${url.slice(0, 160)} x-qen=${xqen || '(空)'}`);
+  if (!REQ_KEY[xqen]) {
+    dlog(ctx, `跳过：x-qen=${xqen || '(空)'} 不在 {2,12,14}`);
+    return; // 只收 2/12/14 三种加密形态
+  }
 
   const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
   if (!body || body.length < 16) return;

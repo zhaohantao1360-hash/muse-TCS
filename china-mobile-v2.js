@@ -576,7 +576,9 @@ async function queryKind(ctx, kind) {
       const innerKeys = inner && typeof inner === 'object' ? Object.keys(inner).join(',') : '';
       const resObj = (inner && inner.newPlanRemainQryRes) || {};
       const resKeys = resObj && typeof resObj === 'object' ? Object.keys(resObj).join(',') : '';
-      ctx.storage.set(STORE.planDebug, `top:[${String(keys).slice(0, 120)}] rspBody:[${String(innerKeys).slice(0, 150)}] res:[${String(resKeys).slice(0, 300)}]`);
+      const rc = data && (data.retCode || (data.body && data.body.retCode)) || '';
+      const rd = data && (data.retDesc || (data.body && data.body.retDesc)) || '';
+      ctx.storage.set(STORE.planDebug, `top:[${String(keys).slice(0, 120)}] rspBody:[${String(innerKeys).slice(0, 150)}] res:[${String(resKeys).slice(0, 200)}] ret:${rc}/${String(rd).slice(0, 60)}`);
     }
   } catch (e) {}
   return data;
@@ -618,13 +620,15 @@ function parseMobile(feeData, planData, opts) {
     unit: '元',
   };
 
-  // 流量：先直接取，取不到就深搜
-  let flows = (planInfo.planRemianFlowRes || []).filter((f) => f && f.flowtype == 0);
+  // 流量：先直接取，取不到就深搜（严格判断数组防 .filter 炸）
+  const flowArr = Array.isArray(planInfo.planRemianFlowRes) ? planInfo.planRemianFlowRes : [];
+  let flows = flowArr.filter((f) => f && f.flowtype == 0);
   if (!flows.length && planData) {
     const found = [];
     deepFindArrays(planData, 'flowRemainNum', found, new Set());
-    flows = ((found[0] || []).filter((f) => f && f.flowtype == 0));
-    if (!flows.length && found[0]) flows = found[0].slice(0, 1); // 实在没有 flowtype 就取第一条
+    const arr = Array.isArray(found[0]) ? found[0] : [];
+    flows = arr.filter((f) => f && f.flowtype == 0);
+    if (!flows.length && arr.length) flows = arr.slice(0, 1); // 实在没有 flowtype 就取第一条
   }
   let flow = { title: '剩余流量', number: '--', unit: '', percent: 0, color: '#0A84FF' };
   if (flows.length) {
@@ -646,13 +650,15 @@ function parseMobile(feeData, planData, opts) {
     }
   }
 
-  // 语音：先直接取，取不到就深搜
-  let voices = (planInfo.planRemianVoiceListRes || []).filter((v) => v && v.voicetype == 0);
+  // 语音：先直接取，取不到就深搜（严格判断数组防 .filter 炸）
+  const voiceArr = Array.isArray(planInfo.planRemianVoiceListRes) ? planInfo.planRemianVoiceListRes : [];
+  let voices = voiceArr.filter((v) => v && v.voicetype == 0);
   if (!voices.length && planData) {
     const found = [];
     deepFindArrays(planData, 'voiceRemainNum', found, new Set());
-    voices = ((found[0] || []).filter((v) => v && v.voicetype == 0));
-    if (!voices.length && found[0]) voices = found[0].slice(0, 1);
+    const arr = Array.isArray(found[0]) ? found[0] : [];
+    voices = arr.filter((v) => v && v.voicetype == 0);
+    if (!voices.length && arr.length) voices = arr.slice(0, 1);
   }
   let voice = { title: '剩余语音', number: '--', unit: '分钟', percent: 0, color: '#30D158' };
   if (voices.length) {

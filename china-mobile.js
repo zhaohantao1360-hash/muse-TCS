@@ -405,19 +405,25 @@ async function handleCapture(ctx) {
   const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body || '');
   if (!body || body.length < 16) return;
 
-  // 先验证能解密，防存坏数据
-  try {
-    const plain = cmDecrypt(body, REQ_KEY[xqen], REQ_IV[xqen]);
-    const obj = JSON.parse(plain);
-    dlog(ctx, `解密OK，顶层字段: ${Object.keys(obj).join(',').slice(0, 120)}`);
-  } catch (e) {
-    dlog(ctx, `解密失败，跳过`);
+  // 先验证能解密，防存坏数据；x-qen 指示的优先，不行就把所有已知组合试一遍
+  let plain = null, usedQen = null;
+  const tryOrder = [xqen, '2', '12', '14'].filter((v, i, a) => REQ_KEY[v] && a.indexOf(v) === i);
+  for (const q of tryOrder) {
+    try {
+      const p = cmDecrypt(body, REQ_KEY[q], REQ_IV[q]);
+      JSON.parse(p);
+      plain = p; usedQen = q; break;
+    } catch (e) { /* 换下一个组合试 */ }
+  }
+  if (!plain) {
+    dlog(ctx, `解密失败（已试 ${tryOrder.join(',')}），跳过`);
     return;
   }
+  dlog(ctx, `解密OK（x-qen=${usedQen}），顶层字段: ${Object.keys(JSON.parse(plain)).join(',').slice(0, 120)}`);
 
   const changed = ctx.storage.get(STORE.paramsEnc) !== body;
   ctx.storage.set(STORE.paramsEnc, body);
-  ctx.storage.set(STORE.xqen, xqen);
+  ctx.storage.set(STORE.xqen, usedQen);
   ctx.storage.set(STORE.loginUrl, url);
   const cookie = String(getHeader(headers, 'cookie') || '').trim();
   if (cookie) ctx.storage.set(STORE.cookie, cookie);

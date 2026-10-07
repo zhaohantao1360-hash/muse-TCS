@@ -449,6 +449,34 @@ async function handleCapture(ctx) {
   if (changed) {
     ctx.storage.set(STORE.loginTs, String(Date.now()));
     ctx.notify({ title: '中国移动', body: '登录参数捕获成功，小组件将自动更新' });
+    // 自检：用刚抓到的参数试一次话费查询，结果打日志（只在新捕获时跑一次）
+    try {
+      const params = JSON.parse(plain);
+      const q = buildQuery(ctx, params, 'fee');
+      dlog(ctx, `自检查询开始`);
+      const resp = await ctx.http.post(q.url, { headers: q.headers, body: q.body, timeout: 15000 });
+      dlog(ctx, `自检 HTTP=${resp ? resp.status : 'no-resp'}`);
+      if (resp && resp.status === 200) {
+        const text = typeof resp.text === 'function' ? await resp.text() : String(resp.body || '');
+        const xpen = String(getHeader(resp.headers, 'x-pen') || '').trim();
+        dlog(ctx, `自检 x-pen=${xpen} len=${text.length}`);
+        let data;
+        if (xpen === '1') {
+          const inner = JSON.parse(text);
+          data = JSON.parse(cmDecrypt(inner.body, RESP1_KEY, DEFAULT_IV));
+        } else if (xpen === '2') {
+          data = JSON.parse(cmDecrypt(text, RESP2_KEY, DEFAULT_IV));
+        } else if (xpen === '14') {
+          data = JSON.parse(cmDecrypt(text, RESP14_KEY, RESP14_IV));
+        } else {
+          data = JSON.parse(text);
+        }
+        const feeInfo = (data && (data.rspBody || (data.body && data.body.rspBody))) || {};
+        dlog(ctx, `自检话费=${feeInfo.realBalanceFee || feeInfo.curFee || 'N/A'} ret=${(data && (data.retCode || '')) || ''}`);
+      }
+    } catch (e) {
+      dlog(ctx, `自检失败: ${String((e && e.message) || e).slice(0, 120)}`);
+    }
   }
 }
 

@@ -681,6 +681,8 @@ async function loadData(ctx) {
     return { configured: true, ds, fromCache: false, debug };
   } catch (e) {
     const cached = ctx.storage.getJSON(STORE.datasource);
+    const errInfo = debug ? ` [${(e && e.stage) || '?'}:${String((e && e.message) || e).slice(0, 60)}]` : '';
+    if (cached) cached.planDebug = (cached.planDebug || '') + errInfo;
     return {
       configured: true, ds: cached || null, fromCache: !!cached, debug,
       error: String((e && e.message) || e), stage: (e && e.stage) || '',

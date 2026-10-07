@@ -592,6 +592,19 @@ function toFlowUnit(remain, unit) {
   return { number: remain.toFixed(2), unit: String(unit || '') };
 }
 
+// 递归深搜：找包含指定键的数组（应对字段嵌套位置变化）
+function deepFindArrays(obj, keyName, out, seen) {
+  if (!obj || typeof obj !== 'object') return;
+  if (seen.has(obj)) return;
+  seen.add(obj);
+  if (Array.isArray(obj)) {
+    if (obj.length && obj[0] && typeof obj[0] === 'object' && keyName in obj[0]) out.push(obj);
+    for (const item of obj) deepFindArrays(item, keyName, out, seen);
+  } else {
+    for (const k of Object.keys(obj)) deepFindArrays(obj[k], keyName, out, seen);
+  }
+}
+
 function parseMobile(feeData, planData, opts) {
   const feeInfo = (feeData && (feeData.rspBody || (feeData.body && feeData.body.rspBody))) || {};
   const planBody = (planData && (planData.rspBody || (planData.body && planData.body.rspBody))) || {};
@@ -605,8 +618,14 @@ function parseMobile(feeData, planData, opts) {
     unit: '元',
   };
 
-  // 流量：取 flowtype==0（通用）的第一条
-  const flows = (planInfo.planRemianFlowRes || []).filter((f) => f && f.flowtype == 0);
+  // 流量：先直接取，取不到就深搜
+  let flows = (planInfo.planRemianFlowRes || []).filter((f) => f && f.flowtype == 0);
+  if (!flows.length && planData) {
+    const found = [];
+    deepFindArrays(planData, 'flowRemainNum', found, new Set());
+    flows = ((found[0] || []).filter((f) => f && f.flowtype == 0));
+    if (!flows.length && found[0]) flows = found[0].slice(0, 1); // 实在没有 flowtype 就取第一条
+  }
   let flow = { title: '剩余流量', number: '--', unit: '', percent: 0, color: '#0A84FF' };
   if (flows.length) {
     const remain = parseFloat(flows[0].flowRemainNum || '0');
@@ -627,8 +646,14 @@ function parseMobile(feeData, planData, opts) {
     }
   }
 
-  // 语音：取 voicetype==0 的第一条
-  const voices = (planInfo.planRemianVoiceListRes || []).filter((v) => v && v.voicetype == 0);
+  // 语音：先直接取，取不到就深搜
+  let voices = (planInfo.planRemianVoiceListRes || []).filter((v) => v && v.voicetype == 0);
+  if (!voices.length && planData) {
+    const found = [];
+    deepFindArrays(planData, 'voiceRemainNum', found, new Set());
+    voices = ((found[0] || []).filter((v) => v && v.voicetype == 0));
+    if (!voices.length && found[0]) voices = found[0].slice(0, 1);
+  }
   let voice = { title: '剩余语音', number: '--', unit: '分钟', percent: 0, color: '#30D158' };
   if (voices.length) {
     const remain = parseInt(voices[0].voiceRemainNum || '0', 10);

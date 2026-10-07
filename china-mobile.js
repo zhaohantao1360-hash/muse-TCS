@@ -327,6 +327,7 @@ const STORE = {
   loginTs: 'cm_login_ts',
   datasource: 'cm_datasource',
   rawDebug: 'cm_raw_debug',
+  planDebug: 'cm_plan_debug',
 };
 
 /* ==================== 工具 ==================== */
@@ -567,6 +568,15 @@ async function queryKind(ctx, kind) {
     err.stage = 'decrypt';
     throw err;
   }
+  // 诊断：记下解密后数据的顶层结构（不记值）
+  try {
+    if (kind === 'plan' && ctx.env.CM_DEBUG === 'true') {
+      const keys = data && typeof data === 'object' ? Object.keys(data).join(',') : typeof data;
+      const inner = data && (data.rspBody || (data.body && data.body.rspBody)) || {};
+      const innerKeys = inner && typeof inner === 'object' ? Object.keys(inner).join(',') : '';
+      ctx.storage.set(STORE.planDebug, `top:[${String(keys).slice(0, 200)}] rspBody:[${String(innerKeys).slice(0, 300)}]`);
+    }
+  } catch (e) {}
   return data;
 }
 
@@ -637,6 +647,7 @@ async function loadData(ctx) {
     const ds = parseMobile(feeData, planData, {
       showUsedFlow: ctx.env.CM_SHOW_USED_FLOW === 'true',
     });
+    if (debug) ds.planDebug = ctx.storage.get(STORE.planDebug) || '';
     ctx.storage.setJSON(STORE.datasource, ds);
     return { configured: true, ds, fromCache: false, debug };
   } catch (e) {
@@ -749,6 +760,10 @@ function buildMedium(title, ds, fromCache, ctx) {
           card(statCard(VOICE_ICON, ds.voice.color, 62, ds.voice).children),
         ],
       },
+      ...(ds.planDebug ? [{
+        type: 'text', text: ds.planDebug,
+        font: { size: 'caption2' }, opacity: 0.5, maxLines: 4,
+      }] : []),
     ],
   };
 }

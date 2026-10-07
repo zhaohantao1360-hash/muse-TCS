@@ -574,7 +574,9 @@ async function queryKind(ctx, kind) {
       const keys = data && typeof data === 'object' ? Object.keys(data).join(',') : typeof data;
       const inner = data && (data.rspBody || (data.body && data.body.rspBody)) || {};
       const innerKeys = inner && typeof inner === 'object' ? Object.keys(inner).join(',') : '';
-      ctx.storage.set(STORE.planDebug, `top:[${String(keys).slice(0, 200)}] rspBody:[${String(innerKeys).slice(0, 300)}]`);
+      const resObj = (inner && inner.newPlanRemainQryRes) || {};
+      const resKeys = resObj && typeof resObj === 'object' ? Object.keys(resObj).join(',') : '';
+      ctx.storage.set(STORE.planDebug, `top:[${String(keys).slice(0, 120)}] rspBody:[${String(innerKeys).slice(0, 150)}] res:[${String(resKeys).slice(0, 300)}]`);
     }
   } catch (e) {}
   return data;
@@ -592,7 +594,9 @@ function toFlowUnit(remain, unit) {
 
 function parseMobile(feeData, planData, opts) {
   const feeInfo = (feeData && (feeData.rspBody || (feeData.body && feeData.body.rspBody))) || {};
-  const planInfo = (planData && (planData.rspBody || (planData.body && planData.body.rspBody))) || {};
+  const planBody = (planData && (planData.rspBody || (planData.body && planData.body.rspBody))) || {};
+  // 套餐数据包在 rspBody.newPlanRemainQryRes 里（兼容直接平铺的旧结构）
+  const planInfo = planBody.newPlanRemainQryRes || planBody;
 
   const feeNum = parseFloat(feeInfo.realBalanceFee || feeInfo.curFee || '0');
   const fee = {

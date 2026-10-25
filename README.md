@@ -20,6 +20,7 @@ muse贪吃蛇
 ## Egern 模块
 
 - `FanQieNovel_egern.yaml`：番茄小说去广告的 Egern 版（由本目录 `honue/FanQieNovel.plugin` 优化版转换：32 条 REJECT 规则 + 18 条 URL 改写 + MITM）。Egern → 模块 → 右上角 + → 通过链接添加。
+- `MT_egern.yaml`：美团 App 去广告的 Egern 版（由上游 muktsoen/SurgeRules 的 `MT.sgmodule` 自动转换：35 条 REJECT 规则 + 8 条响应改写脚本 + MITM；每天 18:00 北京时间自动跟随上游更新，转换脚本见 `scripts/convert_mt_egern.py`）。Egern → 模块 → 右上角 + → 通过链接添加，详见 [MT_egern使用说明.md](MT_egern使用说明.md)（必须开 MITM 证书，否则改写脚本不生效）。
 
 ## 使用方法
 

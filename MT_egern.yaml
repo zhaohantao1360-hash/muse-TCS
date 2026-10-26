@@ -2,7 +2,7 @@
 # 来源：muktsoen/SurgeRules 的 MT.sgmodule，由本脚本自动转换而来，请勿手动编辑。
 # 上游原始来源：ZenmoFeiShi/Qx 的 MT.snippet（上游每日自动同步）。
 # 上游模块名：美团App 12.67.403
-# 上游更新时间：2026-10-25 17:32:01（北京时间）
+# 上游更新时间：2026-10-26 06:21:37（北京时间）
 # 转换对照：Surge [Rule] -> rules；[Script] http-response -> scriptings.http_response；
 # [MITM] hostname -> mitm.hostnames.includes；extended-matching 在 Egern 无对应项，
 # 其含义只是直连 IP 时也按 SNI/Host 匹配，Egern 按主机名匹配已等价，故直接用 domain。
@@ -42,6 +42,12 @@ rules:
       policy: REJECT
   - domain:
       match: httpdnsmultiapivip.meituan.com
+      policy: REJECT
+  - domain:
+      match: httpdns.meituan.com
+      policy: REJECT
+  - domain:
+      match: httpdnsvip.meituan.com
       policy: REJECT
   - domain:
       match: dnspod.meituan.httpdns.qcloud.com
@@ -131,6 +137,34 @@ rules:
       policy: REJECT
       no_resolve: true
   - ip_cidr:
+      match: 103.37.155.60/32
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr:
+      match: 111.230.0.200/32
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr:
+      match: 139.9.47.231/32
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr:
+      match: 121.37.4.167/32
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr:
+      match: 119.29.126.219/32
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr:
+      match: 106.55.217.56/32
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr:
+      match: 103.37.152.224/32
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr:
       match: 119.29.48.215/32
       policy: REJECT
       no_resolve: true
@@ -145,6 +179,14 @@ rules:
       no_resolve: true
   - ip_cidr6:
       match: 2405:1480:1000:3::1e/128
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr6:
+      match: 2405:1480:1000:4::15/128
+      policy: REJECT
+      no_resolve: true
+  - ip_cidr6:
+      match: 2402:4e00:40:40::2:373/128
       policy: REJECT
       no_resolve: true
 
@@ -214,3 +256,5 @@ mitm:
     - mop.meituan.com
     - mt-personalcenter.meituan.com
     - assistify.meituan.com
+    - httpdns.meituan.com
+    - httpdnsmultiapi.meituan.com

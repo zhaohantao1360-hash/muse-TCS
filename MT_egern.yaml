@@ -2,7 +2,7 @@
 # 来源：muktsoen/SurgeRules 的 MT.sgmodule，由本脚本自动转换而来，请勿手动编辑。
 # 上游原始来源：ZenmoFeiShi/Qx 的 MT.snippet（上游每日自动同步）。
 # 上游模块名：美团App 12.67.403
-# 上游更新时间：2026-10-30 07:49:38（北京时间）
+# 上游更新时间：2026-10-31 07:29:55（北京时间）
 # 转换对照：Surge [Rule] -> rules；[Script] http-response -> scriptings.http_response；
 # [MITM] hostname -> mitm.hostnames.includes；extended-matching 在 Egern 无对应项，
 # 其含义只是直连 IP 时也按 SNI/Host 匹配，Egern 按主机名匹配已等价，故直接用 domain。

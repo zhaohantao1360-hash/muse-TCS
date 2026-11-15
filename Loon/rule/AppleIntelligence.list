@@ -24,3 +24,8 @@ DOMAIN,wps.apple.com
 DOMAIN-SUFFIX,pcc.apple.com
 DOMAIN-SUFFIX,apple-intelligence.com
 DOMAIN-SUFFIX,api-apple-intelligence.com
+DOMAIN-SUFFIX,issuer.apple.com
+DOMAIN,ropes.apple.com
+DOMAIN,mask.icloud.com
+DOMAIN,mask-h2.icloud.com
+DOMAIN-SUFFIX,app.apple.com

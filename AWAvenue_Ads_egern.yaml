@@ -1,7 +1,7 @@
 # AWAvenue 去广告（Egern 模块）
 # 来源：TG-Twilight/AWAvenue-Ads-Rule 的 Surge RULE-SET 列表，由本脚本自动转换而来，请勿手动编辑。
 # 上游版本：1.7.9-release
-# 上游更新时间：2026-11-15 00:37:33 UTC+8
+# 上游更新时间：2026-11-16 17:36:05 UTC+8
 # 转换对照：Surge DOMAIN -> domain；DOMAIN-SUFFIX -> domain_suffix；
 # DOMAIN-KEYWORD -> domain_keyword；IP-CIDR -> ip_cidr + no_resolve: true；
 # RULE-SET 本身不带策略，本模块统一以 REJECT 策略装载。
@@ -589,6 +589,9 @@ rules:
       match: adx.ads.oppomobile.com
       policy: REJECT
   - domain:
+      match: adx.anythinktech.com
+      policy: REJECT
+  - domain:
       match: adx.appsdk.com.cn
       policy: REJECT
   - domain:
@@ -643,6 +646,9 @@ rules:
       match: alog.umeng.com
       policy: REJECT
   - domain:
+      match: alogsus.umeng.com
+      policy: REJECT
+  - domain:
       match: alogus.umeng.com
       policy: REJECT
   - domain:
@@ -695,6 +701,9 @@ rules:
       policy: REJECT
   - domain:
       match: analyze.lemurbrowser.com
+      policy: REJECT
+  - domain:
+      match: android.bugly.qq.com
       policy: REJECT
   - domain:
       match: andrqd.play.aiseet.atianqi.com
@@ -895,6 +904,9 @@ rules:
       match: bianxian.com
       policy: REJECT
   - domain:
+      match: bid.shanghailingye.cn
+      policy: REJECT
+  - domain:
       match: biz.weibo.com
       policy: REJECT
   - domain:
@@ -1033,7 +1045,16 @@ rules:
       match: cloooud.com
       policy: REJECT
   - domain:
+      match: cn-api-sec.anythinktech.com
+      policy: REJECT
+  - domain:
       match: cn-api.anythinktech.com
+      policy: REJECT
+  - domain:
+      match: cn-da.anythinktech.com
+      policy: REJECT
+  - domain:
+      match: cn-tk.anythinktech.com
       policy: REJECT
   - domain:
       match: cnlogs.umeng.com
@@ -1085,6 +1106,9 @@ rules:
       policy: REJECT
   - domain:
       match: da.anythinktech.com
+      policy: REJECT
+  - domain:
+      match: da.statisticslinks.com
       policy: REJECT
   - domain:
       match: data-sdk-uuid-log.d.meituan.net
@@ -1180,7 +1204,16 @@ rules:
       match: entry.baidu.com
       policy: REJECT
   - domain:
+      match: errlog.umeng.com
+      policy: REJECT
+  - domain:
+      match: errlogos.umeng.com
+      policy: REJECT
+  - domain:
       match: errnewlog.umeng.com
+      policy: REJECT
+  - domain:
+      match: errnewlogos.umeng.com
       policy: REJECT
   - domain:
       match: et-eus.w.inmobi.com
@@ -2380,6 +2413,9 @@ rules:
       match: snowflake.qq.com
       policy: REJECT
   - domain:
+      match: ssapi.anythinktech.com
+      policy: REJECT
+  - domain:
       match: ssp.cloooud.com
       policy: REJECT
   - domain:
@@ -2515,6 +2551,9 @@ rules:
       match: tk.anythinktech.com
       policy: REJECT
   - domain:
+      match: tk.statisticslinks.com
+      policy: REJECT
+  - domain:
       match: tmead.y.qq.com
       policy: REJECT
   - domain:
@@ -2564,6 +2603,9 @@ rules:
       policy: REJECT
   - domain:
       match: tnc3-bjlgy.toutiaoapi.com
+      policy: REJECT
+  - domain:
+      match: tobapplog.ctobsnssdk.com
       policy: REJECT
   - domain:
       match: toblog.ctobsnssdk.com

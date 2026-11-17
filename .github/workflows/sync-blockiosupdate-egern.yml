@@ -1,0 +1,35 @@
+name: Sync BlockiOSUpdate Egern module
+
+# 每天跟随上游更新 BlockiOSUpdate Egern 模块：
+# 上游 ddgksf2013/Filter 的 BlockiOSUpdate.list，
+# 经 scripts/convert_blockiosupdate_egern.py 转成 BlockiOSUpdate_egern.yaml；
+# 转换输出是确定性的，上游不变时不产生提交。
+
+on:
+  schedule:
+    # 每天 02:30 北京时间
+    - cron: "30 18 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Convert upstream list to Egern module
+        run: |
+          python3 scripts/convert_blockiosupdate_egern.py \
+            --url https://raw.githubusercontent.com/ddgksf2013/Filter/refs/heads/master/BlockiOSUpdate.list \
+            --output BlockiOSUpdate_egern.yaml
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add BlockiOSUpdate_egern.yaml
+          git diff --cached --quiet || git commit -m "Sync BlockiOSUpdate_egern.yaml from upstream" && git push

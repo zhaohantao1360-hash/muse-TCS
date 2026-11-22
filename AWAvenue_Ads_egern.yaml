@@ -1,7 +1,7 @@
 # AWAvenue 去广告（Egern 模块）
 # 来源：TG-Twilight/AWAvenue-Ads-Rule 的 Surge RULE-SET 列表，由本脚本自动转换而来，请勿手动编辑。
 # 上游版本：1.7.9-release
-# 上游更新时间：2026-11-16 17:36:05 UTC+8
+# 上游更新时间：2026-11-23 00:33:15 UTC+8
 # 转换对照：Surge DOMAIN -> domain；DOMAIN-SUFFIX -> domain_suffix；
 # DOMAIN-KEYWORD -> domain_keyword；IP-CIDR -> ip_cidr + no_resolve: true；
 # RULE-SET 本身不带策略，本模块统一以 REJECT 策略装载。

@@ -1,0 +1,71 @@
+# 蛋蛋不语VIP解锁（Egern 原生模块）
+# 来源：curtinp118 的 Surge 模块 + QX v1.1.0（2026-11-25），转写为 Egern 原生格式。
+# 与 Surge 版的区别：补上 QX/Loon 新版才有的 supabase.opengl.top profiles 接口；
+# Surge 版只拦 38.76.202.248:8000 那一条，App 若走 Supabase 查会员就会漏解锁。
+# 解锁脚本直接引用原版 dandanvip_unlock.js，未改写。
+# 注意：与旧的 script.hub 转制 dandanvip 模块二选一，不要同时开。
+name: 蛋蛋不语VIP解锁
+description: 解锁蛋蛋不语 VIP 会员：拦截 profiles 接口改写 VIP 字段（vip_status、vip_level 3、到期 2099）。覆盖 38.76.202.248 与 supabase.opengl.top 两条接口。
+author: Curtinp118（原版脚本）；Egern 原生版：muse-TCS
+homepage: https://github.com/curtinp118/Surge5
+
+rules:
+  - domain_suffix:
+      match: one.one.one.one
+      policy: DIRECT
+  - domain_suffix:
+      match: api.wwzy.tv
+      policy: DIRECT
+  - domain_suffix:
+      match: bfzyapi.com
+      policy: DIRECT
+  - domain_suffix:
+      match: img.picbf.com
+      policy: DIRECT
+  - domain_suffix:
+      match: v10.baofeng10.com
+      policy: DIRECT
+  - domain_suffix:
+      match: icanhazip.com
+      policy: DIRECT
+  - domain_suffix:
+      match: captive.apple.com
+      policy: DIRECT
+  - domain_suffix:
+      match: ajax.googleapis.com
+      policy: DIRECT
+  - domain_suffix:
+      match: s1.fengbao9.com
+      policy: DIRECT
+  - domain_suffix:
+      match: develop202.github.io
+      policy: DIRECT
+  - domain_suffix:
+      match: s2.bfllvip.com
+      policy: DIRECT
+  - ip_cidr:
+      match: 38.76.202.248/32
+      policy: DIRECT
+      no_resolve: true
+
+scriptings:
+  - http_response:
+      name: 蛋蛋不语VIP解锁
+      match: "^http:\\/\\/38\\.76\\.202\\.248:8000\\/.*profiles.*$"
+      script_url: https://raw.githubusercontent.com/curtinp118/Scripthub/main/scripts/dandanvip/dandanvip_unlock.js
+      body_required: true
+      max_size: 1048576
+      timeout: 10
+  - http_response:
+      name: 蛋蛋不语VIP解锁-Supabase
+      match: "^https:\\/\\/supabase\\.opengl\\.top\\/+rest\\/v1\\/profiles(?:\\?.*)?$"
+      script_url: https://raw.githubusercontent.com/curtinp118/Scripthub/main/scripts/dandanvip/dandanvip_unlock.js
+      body_required: true
+      max_size: 1048576
+      timeout: 10
+
+mitm:
+  hostnames:
+    includes:
+    - 38.76.202.248
+    - supabase.opengl.top

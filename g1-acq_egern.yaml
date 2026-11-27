@@ -1,0 +1,35 @@
+# G1 ACQ Plus v9.6.0（Egern 原生模块）
+# 来源：Dgkncn/g1-acq-plus 的 Surge 模块 g1-acq-v8.sgmodule，转写为 Egern 原生格式。
+# 原模块的 UDP 443 拦截规则在 Egern 里不需要：本配置已全局 block_quic: true。
+# 两个脚本直接引用原版，未改写；管理面板 https://one.google.com/g1-sku-report
+# 注意——先看清它到底买什么再点付款：
+# 默认预设是把 Ultra 20TB 按钮的商品 ID 换成 com.google.gemini.2tb.ai.m.3month_ip_99p，
+# 即 Google 在 App Store 上架的 3 个月 99% OFF 体验价商品（美区 $0.29/月×3 个月）。
+# 点 Ultra 按钮实际买到的是这个体验价商品、不是 Ultra 20TB/30TB；
+# 付款前以 Apple 付款框显示的商品名和价格为准，3 个月后按原价自动续费，记得及时取消。
+# 土区老定价档（30TB ₺2949.99、20TB ₺1989.99）须配合土区 Apple ID。
+name: G1 ACQ Plus
+description: Google One 升级页商品 ID 改写：默认把 Ultra 20TB 按钮指向 3 个月 99% OFF 体验价商品（美区 $0.29/月），另附 SKU 报告管理面板。付款前以 Apple 付款框为准，3 个月后按原价续费。
+author: Dgkncn（原版）；Egern 原生版：muse-TCS
+homepage: https://github.com/Dgkncn/g1-acq-plus
+
+scriptings:
+  - http_response:
+      name: G1 ACQ 改写
+      match: "^https:\\/\\/one\\.google\\.com\\/"
+      script_url: https://raw.githubusercontent.com/Dgkncn/g1-acq-plus/main/g1-acq.js
+      body_required: true
+      max_size: 4194304
+      timeout: 30
+  - http_request:
+      name: G1 SKU 报告面板
+      match: "^https:\\/\\/one\\.google\\.com\\/g1-sku-report\\/?(?:\\?.*)?$"
+      script_url: https://raw.githubusercontent.com/Dgkncn/g1-acq-plus/main/g1-sku-report.js
+      body_required: true
+      max_size: 4194304
+      timeout: 30
+
+mitm:
+  hostnames:
+    includes:
+    - one.google.com

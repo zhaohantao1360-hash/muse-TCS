@@ -1,6 +1,7 @@
 # 抖音 / 字节跳动直连（Egern 模块）
 # 来源：blackmatrix7/ios_rule_script 的 ByteDance.list（295 条）+ Richard4O4/clash-rules my_direct 的 ByteDance 段补漏，
 # 由本仓库整理为 DIRECT 规则。请勿手动编辑；小豆/豆包小程序、抖音商城走这份直连。
+# 2026-11-28 补：snssdk.com（小程序核心接口域，2024 年源表漏了）、xiaodou.com、douyinpay.com、byteplus.com。
 # 上游 blackmatrix7 列表更新于 2024-02-03，域名本身稳定；my_direct 为持续维护的补充来源。
 # 注意：AWAvenue 去广告模块同时 REJECT 了 pglstatp-toutiao.com 与 pangolin-sdk-toutiao-b.com（穿山甲/统计上报域名），
 # 与本模块的 DIRECT 有重叠；两模块顺序决定这两个域名最终走哪条——它俩只是广告/统计上报，不影响商店打开。
@@ -906,6 +907,18 @@ rules:
       policy: DIRECT
   - domain_suffix:
       match: zjurl.cn
+      policy: DIRECT
+  - domain_suffix:
+      match: byteplus.com
+      policy: DIRECT
+  - domain_suffix:
+      match: douyinpay.com
+      policy: DIRECT
+  - domain_suffix:
+      match: snssdk.com
+      policy: DIRECT
+  - domain_suffix:
+      match: xiaodou.com
       policy: DIRECT
   - ip_cidr:
       match: 114.246.10.65/32

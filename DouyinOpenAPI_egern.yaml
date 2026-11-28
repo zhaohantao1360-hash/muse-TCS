@@ -1,0 +1,18 @@
+# 抖音开放平台接口直连（Egern 模块）
+# 来源：抖音开放平台文档公开的 OpenAPI 域名。
+# open-sandbox.douyin.com 是沙盒测试环境，未列入——正式浏览商品与下单不要走沙盒。
+# 电商接口 IP 会动态变化，故按域名直连，不填 IP。
+name: 抖音开放平台直连
+description: 抖音开放平台 OpenAPI 域名直连：open.douyin.com（商品查询、账单、订单查询等）与 developer.toutiao.com（登录、担保支付下单）。按域名直连、不走代理。
+author: 抖音开放平台文档
+homepage: https://open.douyin.com
+
+rules:
+  # OpenAPI 接口域名直连
+  - domain_suffix:
+      match: open.douyin.com
+      policy: DIRECT
+  # 登录、担保支付下单接口域名直连
+  - domain_suffix:
+      match: developer.toutiao.com
+      policy: DIRECT

@@ -22,6 +22,7 @@ muse贪吃蛇
 - `FanQieNovel_egern.yaml`：番茄小说去广告的 Egern 版（由本目录 `honue/FanQieNovel.plugin` 优化版转换：32 条 REJECT 规则 + 18 条 URL 改写 + MITM）。Egern → 模块 → 右上角 + → 通过链接添加。
 - `MT_egern.yaml`：美团 App 去广告的 Egern 版（由上游 muktsoen/SurgeRules 的 `MT.sgmodule` 自动转换：35 条 REJECT 规则 + 8 条响应改写脚本 + MITM；每天 18:00 北京时间自动跟随上游更新，转换脚本见 `scripts/convert_mt_egern.py`）。Egern → 模块 → 右上角 + → 通过链接添加，详见 [MT_egern使用说明.md](MT_egern使用说明.md)（必须开 MITM 证书，否则改写脚本不生效）。
 - `AWAvenue_Ads_egern.yaml`：AWAvenue 去广告规则的 Egern 版（由上游 TG-Twilight/AWAvenue-Ads-Rule 的 Surge RULE-SET 列表自动转换：984 条 REJECT 规则，拦截广告、日志埋点与设备指纹上报域名及 IP；每天 02:30 北京时间自动跟随上游更新，转换脚本见 `scripts/convert_awavenue_egern.py`）。Egern → 模块 → 右上角 + → 通过链接添加，详见 [AWAvenue_Ads_egern使用说明.md](AWAvenue_Ads_egern使用说明.md)（纯规则模块，不用开 MITM）。
+- `DouyinOpenAPI_egern.yaml`：抖音开放平台接口直连（open.douyin.com、developer.toutiao.com 两条 DIRECT 规则；沙盒域名 open-sandbox.douyin.com 未列入）。Egern → 模块 → 右上角 + → 通过链接添加。
 
 ## 使用方法
 
